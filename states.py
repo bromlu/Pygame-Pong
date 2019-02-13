@@ -29,11 +29,6 @@ class Game:
         self.time_of_score = pygame.time.get_ticks()
 
     def update(self, keys_pressed, surface):
-        if int(self.left_score) >= 10:
-            return Flash(self.width, self.height, self.right_score_text, self.left_score_text, self.paddles, "Player 2 wins!")
-        elif int(self.right_score) >= 10:
-            return Flash(self.width, self.height, self.left_score_text, self.right_score_text, self.paddles, "Player 1 wins!")
-
         self.ball.draw(surface)
         if(self.ball.get_score_left()):
             self.time_of_score = pygame.time.get_ticks()
@@ -57,6 +52,10 @@ class Game:
             paddle.update(keys_pressed, self.ball.get_x(), self.ball.get_y())
             paddle.draw(surface)
 
+        if int(self.left_score) >= 1:
+            return Flash(self.width, self.height, self.right_score_text, self.left_score_text, self.paddles, "Player 2 wins!")
+        elif int(self.right_score) >= 1:
+            return Flash(self.width, self.height, self.left_score_text, self.right_score_text, self.paddles, "Player 1 wins!")
         return self
 
 class Menu:
