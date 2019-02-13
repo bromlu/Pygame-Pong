@@ -34,6 +34,9 @@ right_score = "0"
 left_score_text = Text(WIDTH/4, 50, left_score)
 right_score_text = Text(WIDTH/4*3, 50, right_score)
 
+clock = pygame.time.Clock()
+delay = clock.tick()
+
 keys_pressed = set()
 done = False
 last = 0
@@ -59,23 +62,28 @@ while not done:
 
     surface.fill((0, 0, 0))
     if(ball.get_score_left()):
+        delay = pygame.time.get_ticks()
         right_score = int(right_score) + 1
         right_score_text.update_text(WIDTH/4*3, 50,str(right_score))
     elif(ball.get_score_right()):
+        delay = pygame.time.get_ticks()
         left_score = int(left_score) + 1
         left_score_text.update_text(WIDTH/4, 50,str(left_score))
     left_score_text.draw(surface)
     right_score_text.draw(surface)
 
+    ball.draw(surface)
+    if(pygame.time.get_ticks() - delay >= 1000):
+        ball.update(paddles)
+
     for y in range(0, HEIGHT, int(HEIGHT/10)):
-        rect = pygame.Rect(WIDTH/2, y, 2, int(HEIGHT/20))
+        rect = pygame.Rect(WIDTH/2, y, 1, int(HEIGHT/20))
         pygame.draw.rect(surface, pygame.Color(255, 255, 255, 255), rect)
 
     for paddle in paddles:
         paddle.update(keys_pressed, ball.get_x(), ball.get_y())
         paddle.draw(surface)
-    ball.update(paddles)
-    ball.draw(surface)
+    
 
     pygame.display.update()
 

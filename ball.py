@@ -1,3 +1,6 @@
+import random
+import math
+
 import contextlib
 with contextlib.redirect_stdout(None): import pygame
 
@@ -36,9 +39,14 @@ class Ball:
         self.rect.y = new_y
 
     def new_ball(self):
-        self.vx = -5
-        self.vy = 0
-        return pygame.Rect(self.screen_width/2, self.screen_height/2, self.size, self.size)
+        self.vx = 0
+        while(self.vx < 2 and self.vx > -2):
+            angle = random.uniform(0, 2 * math.pi)
+            self.vx = math.cos(angle) * self.speed
+            self.vy = math.sin(angle) * self.speed
+        x = self.screen_width/2 - self.size/2
+        y = random.randint(0,self.screen_height - self.size)
+        return pygame.Rect(x, y, self.size, self.size)
 
     def draw(self, surface):
         pygame.draw.rect(surface, pygame.Color(255, 255, 255, 255), self.rect)
