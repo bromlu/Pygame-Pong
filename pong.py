@@ -18,7 +18,7 @@ PADDLE_HEIGHT = 80
 BALL_SIZE = 10
 BALL_SPEED = 5
 
-pygame.init()
+pygame.font.init()
 pygame.display.set_caption('Pong')
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -26,11 +26,13 @@ surface= pygame.display.get_surface()
 
 ball = Ball(WIDTH, HEIGHT, BALL_SIZE, BALL_SPEED)
 paddles = [
-    Paddle(550, 160, PADDLE_HEIGHT, WIDTH, manual_player_1),
-    Paddle(40, 160, PADDLE_HEIGHT, WIDTH, manual_player_2)
+    Paddle(550, 160, PADDLE_HEIGHT, WIDTH, HEIGHT, manual_player_1),
+    Paddle(40, 160, PADDLE_HEIGHT, WIDTH, HEIGHT, manual_player_2)
 ]
-left_score = Text(WIDTH/4, 50, "0")
-right_score = Text(WIDTH/4*3, 50, "0")
+left_score = "0"
+right_score = "0"
+left_score_text = Text(WIDTH/4, 50, left_score)
+right_score_text = Text(WIDTH/4*3, 50, right_score)
 
 keys_pressed = set()
 done = False
@@ -56,18 +58,25 @@ while not done:
     # update and draw
 
     surface.fill((0, 0, 0))
+    if(ball.get_score_left()):
+        right_score = int(right_score) + 1
+        right_score_text.update_text(WIDTH/4*3, 50,str(right_score))
+    elif(ball.get_score_right()):
+        left_score = int(left_score) + 1
+        left_score_text.update_text(WIDTH/4, 50,str(left_score))
+    left_score_text.draw(surface)
+    right_score_text.draw(surface)
 
     for y in range(0, HEIGHT, int(HEIGHT/10)):
-        rect = pygame.Rect(WIDTH/2, y, 1, int(HEIGHT/20))
+        rect = pygame.Rect(WIDTH/2, y, 2, int(HEIGHT/20))
         pygame.draw.rect(surface, pygame.Color(255, 255, 255, 255), rect)
 
-    left_score.draw(surface)
-    right_score.draw(surface)
     for paddle in paddles:
         paddle.update(keys_pressed, ball.get_x(), ball.get_y())
         paddle.draw(surface)
     ball.update(paddles)
     ball.draw(surface)
+
     pygame.display.update()
 
 pygame.quit()

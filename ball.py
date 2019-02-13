@@ -8,12 +8,26 @@ class Ball:
         self.size = size
         self.speed = speed
         self.rect = self.new_ball()
+        self.score_left = False
+        self.score_right = False
 
     def get_x(self):
         return self.rect.x
 
     def get_y(self):
         return self.rect.y
+
+    def get_score_left(self):
+        if(self.score_left):
+            self.score_left = False
+            return True
+        return False
+
+    def get_score_right(self):
+        if(self.score_right):
+            self.score_right = False
+            return True
+        return False
 
     def set_x(self, new_x):
         self.rect.x = new_x
@@ -46,5 +60,9 @@ class Ball:
             self.vy = -1 * abs(self.vy)
         elif self.rect.y <= 0:
             self.vy = abs(self.vy)
-        if self.rect.x >= self.screen_width - 10 or self.rect.x <= 0:
+        if self.rect.x >= self.screen_width - 10:
+            self.score_right = True
+            self.rect = self.new_ball()
+        if self.rect.x <= 0:
+            self.score_left = True
             self.rect = self.new_ball()

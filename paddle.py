@@ -3,9 +3,10 @@ import contextlib
 with contextlib.redirect_stdout(None): import pygame
 
 class Paddle:
-    def __init__(self, x, y, height, screen_width, update_function):
+    def __init__(self, x, y, height, screen_width, screen_height, update_function):
         self.height = height
         self.screen_width = screen_width
+        self.screen_height = screen_height
         self.rect = pygame.Rect(x, y, 10, height)
         self.update_function = update_function
 
