@@ -131,6 +131,13 @@ class Menu:
                 "y": self.height/4 * 3, 
                 "state": Instruction(self.width, self.height) 
             },
+            { 
+                "text": "Thanks", 
+                "text_index": 7, 
+                "x": self.width/2, 
+                "y": self.height/4 * 3 + 34, 
+                "state": Thanks(self.width, self.height) 
+            },
         ]
 
         self.text = [
@@ -260,5 +267,30 @@ class Flash:
 
         if(pygame.time.get_ticks() - self.time_started >= 2000):
             return Endgame(self.width, self.height, self.message)
+
+        return self
+
+class Thanks:
+    def __init__(self, width, height): 
+        self.width = width
+        self.height = height
+
+        self.text = [
+            Text(self.width/2, self.height/5, "Special Thanks", 72),
+            Text(self.width/2, self.height/5 + 50, "(Hit backspace or delete to return to menu)", 12),
+            Text(self.width/2, self.height/2 - 26, "To dl-sounds and Subspace Audio for their", 16),
+            Text(self.width/2, self.height/2 - 10, "awesome public domain music and effects!", 16),
+            Text(self.width/2, self.height/2 + 10, "Also thanks to Dr. Denning and Edric Lamar", 16),
+            Text(self.width/2, self.height/2 + 26, "For all of the things they taught me", 16),
+            Text(self.width/2, self.height - 14, "(Hit escape to exit at any time)", 12)
+        ]
+
+    def update(self, keys_pressed, surface):
+        if pygame.K_DELETE in keys_pressed or pygame.K_BACKSPACE in keys_pressed:
+            MENU_SELECT.play()
+            return Menu(self.width, self.height)
+
+        for text in self.text:
+            text.draw(surface)
 
         return self
