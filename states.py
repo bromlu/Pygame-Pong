@@ -1,8 +1,11 @@
+import random
+import math
+
 from ball import Ball
 from paddle import Paddle
 from text import Text
-
 from players import manual_player_1, manual_player_2, AI_player
+from powers import Grow_Power, Shrink_Power
 
 import contextlib
 with contextlib.redirect_stdout(None): import pygame
@@ -10,6 +13,8 @@ with contextlib.redirect_stdout(None): import pygame
 PADDLE_HEIGHT = 80
 BALL_SIZE = 10
 BALL_SPEED = 5
+POWER_SIZE = 10
+POWER_SPEED = 7
 
 class Game:
     def __init__(self, width, height, player_1, player_2): 
@@ -20,6 +25,7 @@ class Game:
             Paddle(550, 160, PADDLE_HEIGHT, width, height, player_1),
             Paddle(40, 160, PADDLE_HEIGHT, width, height, player_2)
         ]
+        self.powers = []
         self.left_score = "0"
         self.right_score = "0"
         self.left_score_text = Text(width/4, 50, self.left_score)
@@ -29,6 +35,13 @@ class Game:
         self.time_of_score = pygame.time.get_ticks()
 
     def update(self, keys_pressed, surface):
+        randomInt = random.randint(0, 100)
+        if randomInt == 7:
+            self.spawn_power(surface, Grow_Power)
+        elif randomInt == 42:
+            self.spawn_power(surface, Shrink_Power)
+        
+
         self.ball.draw(surface)
         if(self.ball.get_score_left()):
             self.time_of_score = pygame.time.get_ticks()
@@ -52,11 +65,29 @@ class Game:
             paddle.update(keys_pressed, self.ball.get_x(), self.ball.get_y())
             paddle.draw(surface)
 
-        if int(self.left_score) >= 1:
+        for power in self.powers:
+            if not power.get_collected():
+                power.update(self.paddles)
+                power.draw(surface)
+            elif power.get_delete():
+                self.powers.remove(power)
+
+        if int(self.left_score) >= 10:
             return Flash(self.width, self.height, self.right_score_text, self.left_score_text, self.paddles, "Player 2 wins!")
-        elif int(self.right_score) >= 1:
+        elif int(self.right_score) >= 10:
             return Flash(self.width, self.height, self.left_score_text, self.right_score_text, self.paddles, "Player 1 wins!")
         return self
+
+    def spawn_power(self, surface, power_type):
+        vx = 0
+        while(vx < 2 and vx > -2):
+            angle = random.uniform(0, 2 * math.pi)
+            vx = math.cos(angle) * POWER_SPEED
+            vy = math.sin(angle) * POWER_SPEED
+        x = self.width/2 - POWER_SIZE/2
+        y = random.randint(0,self.height - POWER_SIZE)
+        self.powers.append(power_type(x, y, POWER_SIZE, self.width, self.height, vx, vy))
+
 
 class Menu:
     def __init__(self, width, height): 
@@ -167,8 +198,8 @@ class Instruction:
         self.text = [
             Text(self.width/2, self.height/5, "Instructions", 72),
             Text(self.width/2, self.height/5 + 50, "(Hit backspace or delete to return to menu)", 12),
-            Text(self.width/2, self.height/2 - 10, "Player One: Up and Down arrows to move paddle", 16),
-            Text(self.width/2, self.height/2 + 10, "Player Two: W (up) and S (down) to move paddle", 16),
+            Text(self.width/2, self.height/2 - 10, "Player One: Up and Down arrows to move paddle, ? for powerup.", 16),
+            Text(self.width/2, self.height/2 + 10, "Player Two: W (up) and S (down) to move paddle, e for powerup", 16),
             Text(self.width/2, self.height - 14, "(Hit escape to exit at any time)", 12)
         ]
 
