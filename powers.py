@@ -3,6 +3,11 @@ import math
 import contextlib
 with contextlib.redirect_stdout(None): import pygame
 
+SHRINK = pygame.mixer.Sound("assets/sfx_sounds_negative1.wav")
+GROW = pygame.mixer.Sound("assets/sfx_sounds_powerup8.wav")
+COLLECT = pygame.mixer.Sound("assets/sfx_sounds_powerup6.wav")
+SHOOT = pygame.mixer.Sound("assets/sfx_wpn_laser8.wav")
+
 class Power:
     def __init__(self, x, y, size, screen_width, screen_height, vx, vy, color):
         self.vx = vx
@@ -40,6 +45,8 @@ class Power:
             result = paddles[index].set_power(self)
             if result == -1:
                 self.delete = True
+            else:
+                COLLECT.play()
             self.collected = True
 
     def handle_bounds_collision(self):
@@ -57,6 +64,7 @@ class Grow_Power(Power):
         Power.__init__(self, x, y, size, screen_width, screen_height, vx, vy, pygame.color.Color('green'))
 
     def use(self, paddle):
+        GROW.play()
         paddle.grow()
 
 class Shrink_Power(Power):
@@ -64,6 +72,7 @@ class Shrink_Power(Power):
         Power.__init__(self, x, y, size, screen_width, screen_height, vx, vy, pygame.color.Color('red'))
 
     def use(self, paddle):
+        SHOOT.play()
         self.originPaddle = paddle
         self.rect = pygame.Rect(paddle.get_center_x(), paddle.get_center_y(), 10, 2)
         self.vx = math.copysign(abs(self.vx) + abs(self.vy), -1 * self.vx)
@@ -75,6 +84,7 @@ class Shrink_Power(Power):
         index = self.rect.collidelist(paddles)
         if index != -1:
             if paddles[index] != self.originPaddle:
+                SHRINK.play()
                 paddles[index].shrink()
                 self.delete = True
                 self.collected = True

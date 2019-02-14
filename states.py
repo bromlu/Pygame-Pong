@@ -10,6 +10,10 @@ from powers import Grow_Power, Shrink_Power
 import contextlib
 with contextlib.redirect_stdout(None): import pygame
 
+MENU_MOVE = pygame.mixer.Sound("assets/sfx_menu_move1.wav")
+MENU_SELECT = pygame.mixer.Sound("assets/sfx_menu_select1.wav")
+WIN = pygame.mixer.Sound("assets/sfx_alarm_loop8.wav")
+
 PADDLE_HEIGHT = 80
 BALL_SIZE = 10
 BALL_SPEED = 5
@@ -73,8 +77,12 @@ class Game:
                 self.powers.remove(power)
 
         if int(self.left_score) >= 10:
+            pygame.mixer.stop()
+            WIN.play(2)
             return Flash(self.width, self.height, self.right_score_text, self.left_score_text, self.paddles, "Player 2 wins!")
         elif int(self.right_score) >= 10:
+            pygame.mixer.stop()
+            WIN.play(2)
             return Flash(self.width, self.height, self.left_score_text, self.right_score_text, self.paddles, "Player 1 wins!")
         return self
 
@@ -141,6 +149,7 @@ class Menu:
         self.update_selected(keys_pressed)
 
         if pygame.K_RETURN in keys_pressed or pygame.K_KP_ENTER in keys_pressed:
+            MENU_SELECT.play()
             return self.options[self.selected]["state"]
 
         for text in self.text:
@@ -154,6 +163,7 @@ class Menu:
 
         if(pygame.time.get_ticks() - self.time_since_button_pressed >= 100):
             if pygame.K_UP in keys_pressed:
+                MENU_MOVE.play()
                 self.text[option["text_index"]].update_text(option["x"], option["y"], option["text"])
                 if self.selected == 0:
                     self.selected = len(self.options) - 1
@@ -162,6 +172,7 @@ class Menu:
                 self.time_since_button_pressed = pygame.time.get_ticks()
 
             if pygame.K_DOWN in keys_pressed:
+                MENU_MOVE.play()
                 self.text[option["text_index"]].update_text(option["x"], option["y"], option["text"])
                 if self.selected == len(self.options) - 1:
                     self.selected = 0
@@ -183,6 +194,7 @@ class Endgame:
 
     def update(self, keys_pressed, surface):
         if pygame.K_DELETE in keys_pressed or pygame.K_BACKSPACE in keys_pressed:
+            MENU_SELECT.play()
             return Menu(self.width, self.height)
 
         for text in self.text:
@@ -205,6 +217,7 @@ class Instruction:
 
     def update(self, keys_pressed, surface):
         if pygame.K_DELETE in keys_pressed or pygame.K_BACKSPACE in keys_pressed:
+            MENU_SELECT.play()
             return Menu(self.width, self.height)
 
         for text in self.text:

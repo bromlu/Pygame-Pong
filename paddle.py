@@ -6,6 +6,8 @@ with contextlib.redirect_stdout(None): import pygame
 class Paddle:
     def __init__(self, x, y, height, screen_width, screen_height, update_function):
         self.height = height
+        self.color = pygame.Color(255, 255, 255, 255)
+        self.blink_countdown = 0
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.rect = pygame.Rect(x, y, 10, height)
@@ -38,17 +40,26 @@ class Paddle:
         return 0
 
     def grow(self):
+        self.color = pygame.color.Color('green')
+        self.blink_countdown = 10
         self.height += 10
         if self.height > self.screen_height/2:
             self.height = self.screen_height/2
         self.rect = pygame.Rect(self.get_x(), self.get_y(), 10, self.height)
 
     def shrink(self):
+        self.color = pygame.color.Color('red')
+        self.blink_countdown = 10
         self.height -= 10
+        if self.height < 10:
+            self.height = 10
         self.rect = pygame.Rect(self.get_x(), self.get_y(), 10, self.height)
 
     def draw(self, surface):
-        color = pygame.Color(255, 255, 255, 255)
+        color = self.color
+        self.blink_countdown -= 1
+        if self.blink_countdown <= 0:
+            color = pygame.Color(255, 255, 255, 255)
         if self.power is not None:
             color = self.power.get_color()
         pygame.draw.rect(surface, color, self.rect)

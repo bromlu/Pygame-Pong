@@ -4,7 +4,6 @@ import os
 import sys
 import time
 
-from states import Menu
 from players import manual_player_1, manual_player_2, AI_player
 
 import contextlib
@@ -13,8 +12,14 @@ with contextlib.redirect_stdout(None): import pygame
 WIDTH = 600
 HEIGHT = 400
 
+pygame.mixer.init()
 pygame.font.init()
 pygame.display.set_caption('Pong')
+from states import Menu
+
+#https://www.dl-sounds.com/royalty-free/off-limits/
+pygame.mixer.music.load('assets/Off_Limits.wav')
+pygame.mixer.music.play(loops=-1)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 surface= pygame.display.get_surface()
@@ -47,5 +52,6 @@ while not done:
     state = state.update(keys_pressed, surface)
     pygame.display.update()
 
+pygame.mixer.music.stop()
 pygame.quit()
 sys.exit()
