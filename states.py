@@ -39,10 +39,10 @@ class Game:
         self.time_of_score = pygame.time.get_ticks()
 
     def update(self, keys_pressed, surface):
-        randomInt = random.randint(0, 100)
+        randomInt = random.randint(0, 200)
         if randomInt == 7:
             self.spawn_power(surface, Grow_Power)
-        elif randomInt == 42:
+        elif randomInt == 42 or randomInt == 69:
             self.spawn_power(surface, Shrink_Power)
         
 
@@ -210,8 +210,10 @@ class Instruction:
         self.text = [
             Text(self.width/2, self.height/5, "Instructions", 72),
             Text(self.width/2, self.height/5 + 50, "(Hit backspace or delete to return to menu)", 12),
-            Text(self.width/2, self.height/2 - 10, "Player One: Up and Down arrows to move paddle, ? for powerup.", 16),
-            Text(self.width/2, self.height/2 + 10, "Player Two: W (up) and S (down) to move paddle, e for powerup", 16),
+            Text(self.width/2, self.height/2 - 26, "Player One: Up and Down arrows to move paddle, ? for powerup.", 16),
+            Text(self.width/2, self.height/2 - 10, "Player Two: W (up) and S (down) to move paddle, e for powerup", 16),
+            Text(self.width/2, self.height/2 + 10, "Green Powerups grow your paddle", 16),
+            Text(self.width/2, self.height/2 + 26, "Red Powerups fire shrink rays at your opponent", 16),
             Text(self.width/2, self.height - 14, "(Hit escape to exit at any time)", 12)
         ]
 
